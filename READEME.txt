@@ -1,0 +1,15 @@
+#EyegoDashboard
+
+1- Setup instructions:-
+ 1-Dwonload the code from Github url.
+ 2-Open the file on VScode.
+ 3- run npm install command in terminal to install all needed packages.
+ 4- run npm run dev command to run the project.
+
+2- My implementation approach:-
+ 1- first i create a next project.
+ 2- I choose the App router in next to make the project route dynamically.
+ 3- I have craete the store and slice to make the redux for state mangment to make a fake API.
+ 4- Make sure that the redux is working in all components using provider.
+ 5- Install @tanstack/react-table package to help me make the table and the functions (filter - sort -pagination).
+ 6- Use the Chartjs package to import the functions to make a chart.
