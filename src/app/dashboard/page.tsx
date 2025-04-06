@@ -13,6 +13,9 @@ import {
 import { faker } from "@faker-js/faker";
 import { useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { selectSorting, setSorting } from "../store/sortingSlice";
 
 interface User {
   id: string;
@@ -53,6 +56,14 @@ export default function DynamicTable() {
   const sortingRef = useRef<SortingState>([]);
   const router = useRouter();
 
+  // Use Redux instead of useState
+  const dispatch = useDispatch();
+  const sorting = useSelector(selectSorting);
+
+  useEffect(() => {
+    sortingRef.current = sorting;
+  }, [sorting]);
+
   const table = useReactTable({
     data: usersList,
     columns,
@@ -61,11 +72,13 @@ export default function DynamicTable() {
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      sorting: sortingRef.current,
+      sorting: sorting,
     },
     onSortingChange: (updater) => {
-      sortingRef.current =
+      const newSorting =
         typeof updater === "function" ? updater(sortingRef.current) : updater;
+      sortingRef.current = newSorting;
+      dispatch(setSorting(newSorting));
     },
   });
 
@@ -73,25 +86,21 @@ export default function DynamicTable() {
     const value = filterRef.current?.value || "";
     table.setGlobalFilter(value);
   };
-  const handelnavigate = () => {
+
+  const handleNavigate = () => {
     router.push("/dashboard/chartpage");
   };
-  const handleSort = (columnId: string) => {
-    const existingSort = sortingRef.current.find((s) => s.id === columnId);
-    const direction =
-      existingSort?.desc === false
-        ? true
-        : existingSort?.desc
-        ? undefined
-        : false;
 
-    const newSorting =
-      direction === undefined
-        ? sortingRef.current.filter((s) => s.id !== columnId)
-        : [{ id: columnId, desc: direction }];
-
-    sortingRef.current = newSorting;
-    table.options.onSortingChange?.(newSorting);
+  const getSortIcon = (columnId: string) => {
+    const sortEntry = (sorting as { id: string; desc: boolean }[]).find(
+      (s) => s.id === columnId
+    );
+    if (!sortEntry) return <ArrowUpDown className="h-4 w-4 opacity-50" />;
+    return sortEntry.desc ? (
+      <ArrowDown className="h-4 w-4" />
+    ) : (
+      <ArrowUp className="h-4 w-4" />
+    );
   };
 
   useEffect(() => {
@@ -110,8 +119,8 @@ export default function DynamicTable() {
           className="border border-gray-300 rounded px-3 py-1 w-full max-w-sm"
         />
         <button
-          className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
-          onClick={handelnavigate}
+          className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+          onClick={handleNavigate}
         >
           Go to chart
         </button>
@@ -125,20 +134,23 @@ export default function DynamicTable() {
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="p-3 font-medium text-gray-700 cursor-pointer select-none"
-                    onClick={() => handleSort(header.column.id)}
+                    className="p-3 font-medium text-gray-700 select-none"
                   >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                    {sortingRef.current.find((s) => s.id === header.column.id)
-                      ? sortingRef.current.find(
-                          (s) => s.id === header.column.id
-                        )?.desc
-                        ? "🔽 "
-                        : " 🔼"
-                      : ""}
+                    <div
+                      className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors group"
+                      onClick={() => header.column.toggleSorting()}
+                      title={`Sort by ${header.column.id}`}
+                    >
+                      <span>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </span>
+                      <span className="text-gray-400 group-hover:text-blue-500">
+                        {getSortIcon(header.column.id)}
+                      </span>
+                    </div>
                   </th>
                 ))}
               </tr>
