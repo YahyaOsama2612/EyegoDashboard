@@ -55,8 +55,6 @@ export default function DynamicTable() {
   const filterRef = useRef<HTMLInputElement>(null);
   const sortingRef = useRef<SortingState>([]);
   const router = useRouter();
-
-  // Use Redux instead of useState
   const dispatch = useDispatch();
   const sorting = useSelector(selectSorting);
 

@@ -1,4 +1,3 @@
-// First, create a new file for your Redux slice: sortingSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from './store';
 
