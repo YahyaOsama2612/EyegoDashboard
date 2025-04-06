@@ -1,13 +1,14 @@
 #EyegoDashboard
 
 1- Setup instructions:-
- 1-Dwonload the code from Github url.
- 2-Open the file on VScode.
- 3- run npm install command in terminal to install all needed packages.
- 4- run npm run dev command to run the project.
+ 1- Dwonload the code from Github url.
+ 2- Open the file on VScode.
+ 3- Run npm install command in terminal to install all needed packages.
+ 4- Run npm run dev command to run the project.
+ 5- You can find the code after deploment here (https://eyego-dashboard.vercel.app/).
 
 2- My implementation approach:-
- 1- first i create a next project.
+ 1- First i create a next project.
  2- I choose the App router in next to make the project route dynamically.
  3- I have craete the store and slice to make the redux for state mangment to make a fake API.
  4- Make sure that the redux is working in all components using provider.
