@@ -1,13 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-import useReducer from "./userSlice";
-import sortingreducer from "./sortingSlice"
+import userReducer from "./userSlice";
+import sortingReducer from "./sortingSlice";
 
 export const store = configureStore({
   reducer: {
-    user: useReducer,
-    sorting: sortingreducer,
-    
+    user: userReducer,
+    sorting: sortingReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST"],
+      },
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
