@@ -1,4 +1,4 @@
-// lib/mockAuthApi.ts
+
 
 interface User {
     email: string;
